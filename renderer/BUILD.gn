@@ -39,6 +39,10 @@ impeller_component("renderer") {
     "backend/metal/vertex_descriptor_mtl.mm",
   ]
 
+  webgpu_backend_sources = [
+    "backend/webgpu/context_webgpu.h"
+  ]
+
   sources = [
               "allocator.h",
               "allocator.cc",
@@ -104,7 +108,13 @@ impeller_component("renderer") {
               "vertex_buffer_builder.cc",
               "vertex_descriptor.h",
               "vertex_descriptor.cc",
-            ] + metal_backend_sources
+            ]
+
+  if (target_os == "macOS" || target_os == "iOS") {
+    sources += metal_backend_sources
+  } else if (target_os = "wasm") {
+    sources += webgpu_backend_sources
+  }
 
   public_deps = [
     "../base",
